@@ -41,3 +41,7 @@ External Maps/TikTok embeds depend on provider availability, permissions and net
 See [deployment handoff](docs/DEPLOYMENT.md) and [production booking plan](docs/BOOKING-PLAN.md).
 
 Content source: https://action-etranger.fr/ . Competitor reviewed for navigation and service clarity: https://titresfrancais.fr/ . Text and design in this demo are a new proposal; no competitor testimonials or results claims were copied.
+
+## Design previews
+
+[Desktop preview](docs/preview-desktop.png) · [Mobile preview](docs/preview-mobile.png)
