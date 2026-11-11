@@ -1,0 +1,67 @@
+"""Browser checks against the locally running demo. Uses installed Python Playwright."""
+from datetime import date, timedelta
+from playwright.sync_api import sync_playwright, expect
+import os
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True, executable_path=os.environ.get('CHROMIUM_PATH', '/usr/bin/chromium'), args=['--no-sandbox'])
+    page = browser.new_page(viewport={'width':1440,'height':1000})
+    errors = []
+    page.on('pageerror', lambda e: errors.append(str(e)))
+    page.goto(os.environ.get('DEMO_URL','http://127.0.0.1:4173'))
+    expect(page.locator('.service-card')).to_have_count(6)
+    expect(page.locator('iframe')).to_have_count(0)
+    assert not page.evaluate('document.documentElement.scrollWidth > innerWidth')
+    page.locator('.service-card').first.click()
+    expect(page.locator('#info-dialog')).to_be_visible()
+    page.get_by_role('button', name='Parler de cette démarche').click()
+    expect(page.locator('#booking-service')).to_have_value('Titre de séjour')
+    expect(page.locator('#booking-dialog')).to_contain_text('non remboursable')
+    start = date.fromisoformat(page.locator('#booking-date').get_attribute('min'))
+    saturday = start + timedelta(days=(5-start.weekday()) % 7)
+    page.locator('#booking-date').fill(saturday.isoformat())
+    expect(page.locator('#date-error')).to_contain_text('lundi au vendredi')
+    day = start + timedelta(days=1)
+    while day.weekday() > 4:
+        day += timedelta(days=1)
+    day = day.isoformat()
+    page.locator('#booking-date').fill(day)
+    page.locator('#booking-time').select_option('09:00')
+    page.locator('[name="name"]').fill('<img src=x onerror=alert(1)>')
+    page.locator('[name="email"]').fill('test@example.com')
+    page.locator('[name="consent"]').check()
+    page.get_by_role('button',name='Simuler mon rendez-vous').click()
+    expect(page.locator('#booking-success')).to_contain_text('Aucun rendez-vous réel')
+    page.get_by_role('button',name='Voir la démo admin').click()
+    expect(page.locator('#booking-count')).to_have_text('1')
+    expect(page.locator('.booking-row img')).to_have_count(0)
+    expect(page.locator('.booking-row')).to_contain_text('<img src=x onerror=alert(1)>')
+    page.get_by_role('button',name='Ajouter une simulation').click()
+    page.locator('#booking-date').fill(day)
+    assert page.locator('#booking-time option[value="09:00"]').count() == 0
+    page.keyboard.press('Escape')
+    page.get_by_role('button',name='Annuler la simulation').click()
+    expect(page.locator('#booking-count')).to_have_text('0')
+    page.get_by_role('button',name='Ajouter une simulation').click()
+    page.locator('#booking-date').fill(day)
+    expect(page.locator('#booking-time option[value="09:00"]')).to_have_count(1)
+    page.keyboard.press('Escape')
+    page.reload()
+    expect(page.locator('.booking-row')).to_have_count(0)
+    page.goto('http://127.0.0.1:4173')
+    page.locator('#load-map').click()
+    expect(page.locator('#map-wrap iframe')).to_have_attribute('src', 'https://www.google.com/maps?q=14+Boulevard+Charles+Nedelec+13001+Marseille&output=embed')
+    page.locator('[data-video]').first.click()
+    expect(page.locator('.video-art iframe')).to_have_count(1)
+    expect(page.locator('.external-video-link')).to_have_attribute('href','https://www.tiktok.com/@action.etrangers/video/7690160346375540000')
+    for width in [320,390,768,1440]:
+        page.set_viewport_size({'width':width,'height':844})
+        assert not page.evaluate('document.documentElement.scrollWidth > innerWidth'), f'Overflow at {width}'
+    page.set_viewport_size({'width':390,'height':844})
+    page.get_by_role('button',name='Ouvrir le menu').click()
+    expect(page.locator('#navigation')).to_be_visible()
+    page.locator('nav a[href="#contact"]').click()
+    expect(page.locator('#navigation')).not_to_be_visible()
+    assert not errors, errors
+    browser.close()
+    print('PASS: service details; weekend rejection; booking; admin; safe text rendering; duplicate slot prevention; cancellation; reload reset; click-to-load integrations; 4 responsive widths; mobile navigation; no JavaScript errors.')
