@@ -1,47 +1,56 @@
-# Action Étrangers — frontend demonstration
+# Action Étranger
 
-French, responsive website proposal for Action Étrangers. No production backend, payment, email delivery, authentication or real appointments.
+French administrative support website demo, redesigned around the supplied official logo.
 
-## Run
+**Preview:** https://prev.action-etranger.fr/ · **Admin demo:** https://prev.action-etranger.fr/#admin
 
-Requires Python 3 and Node.js 20+ (build only). No npm dependencies or installation required.
+## Design
+
+Native HTML, CSS and JavaScript, with no frontend framework or runtime dependencies. Manrope headings and Source Sans 3 body text are served locally. The navy/ivory palette, restrained red details, six consistent Lucide service icons and responsive layouts share one design system.
+
+The official logo is preserved as the original PNG and a transparent PNG. Background removal was deterministic and approved by the client; recompositing over black reproduces the original pixels exactly. The white symbol is supported by a dark circular backing in navigation, footer and PNG app icons.
+
+[Desktop screenshot](docs/preview-desktop.png) · [Mobile screenshot](docs/preview-mobile.png) · [Design and verification record](docs/REDESIGN.md)
+
+## Run and build
+
+Requires Node.js 20+ for building and Python 3 for the simple development server. No package installation is needed to run the website.
 
 ```sh
-cd /workspace/action
-npm run dev
+node scripts/build.mjs
+python3 -m http.server 4173 --bind 127.0.0.1 --directory dist
 ```
 
-Open port 4173 in your browser. `#admin` opens the explicitly public admin demo. Each simulated booking stays only in JavaScript memory in that tab and disappears on reload. Use fictitious information only.
+On Windows use your installed Python executable if `python3` is not on PATH. Open http://127.0.0.1:4173/.
+
+## Features
+
+- Six service detail dialogs and contextual appointment selection.
+- 30-minute, proposed €10 appointment simulation, Monday to Friday, 09:00–17:00 Paris time.
+- Required service/date/time and fictitious name/email; optional request description.
+- Weekend and elapsed-time rejection, duplicate-slot prevention, cancellation and public admin view.
+- Native FAQ, keyboard navigation, visible focus, reduced-motion support and responsive layouts.
+- WhatsApp, TikTok and Instagram links; two supplied TikTok videos and Google Maps load only after a click.
+- Original title/description and preview noindex/nofollow settings retained.
+
+Bookings live only in memory in the current tab and disappear on reload. No real booking, payment, email, authentication or database is active. Use fictitious information only. Proposed fee/non-refund conditions are shown only inside the booking flow and retain the qualification for applicable legal rights.
+
+## Verification
+
+`tests/browser.cjs` covers 51 assertions and the five requested widths: 1440, 1024, 768, 390 and 375px. It also runs axe scans when `AXE_PATH` points to an installed `@axe-core/playwright` package. Browser tooling is development-only and is never uploaded to hosting.
 
 ```sh
-npm run build # produces dist/, ready for isolated static preview hosting
-npm test      # while the dev server runs; needs Python Playwright and Chromium
+node tests/browser.cjs
 ```
 
-The browser smoke test uses `/usr/bin/chromium`; override `CHROMIUM_PATH` if needed. GitHub Actions creates a build artifact; it does not deploy anything.
+Install Playwright separately or set `PLAYWRIGHT_PATH` to an existing installation; set `CHROMIUM_PATH` when using an installed Chromium/Edge executable. Optional environment variables: `DEMO_URL`, `ARTIFACT_DIR`, `AXE_PATH`. The legacy Python smoke suite remains available through `npm test`.
 
-## Included
+The final local mobile Lighthouse run scored 100 performance, 100 accessibility and 100 best practices (LCP 1.3s, CLS 0, TBT 20ms). These are lab measurements. Preview SEO scores are intentionally reduced by noindex. Automated accessibility scans do not replace a complete manual audit. TikTok/Maps URL and lazy-loading checks do not guarantee availability of third-party playback.
 
-- Six service cards and detail dialogs, explanatory steps and FAQ.
-- Contact details, Monday–Friday 09:00–17:00, verified against the live website on 11 November 2026.
-- WhatsApp, Instagram and TikTok links with vector social icons.
-- Two unique supplied TikTok videos, loaded on user interaction with direct-link fallbacks. Repeated video URL supplied by the client is deduplicated.
-- Google Maps embed loaded only after a click, plus a directions link.
-- 30-minute / proposed €10 appointment simulation: service, date, Paris time, fictitious name/email, optional description and terms acceptance.
-- Weekday selection, elapsed-time filtering, demonstration slot conflict prevention and cancellation.
-- Public admin prototype showing session simulations, counts and cancellation.
-- Responsive layout, native keyboard-accessible dialogs, reduced-motion support and no tracking scripts.
+## Deployment and next phase
 
-External Maps/TikTok embeds depend on provider availability, permissions and network policy. Automated checks verify their requested URLs and lazy loading, not successful playback on those third-party services. Booking fee and proposed non-refund terms appear in the booking flow only. Final cancellation/withdrawal conditions require client review before payment activation.
+Deploy only to **prev.action-etranger.fr**. Production WordPress and email must remain intact. GitHub Actions builds a static artifact; it does not auto-deploy.
 
-## Deployment boundary
+See [deployment record](docs/DEPLOYMENT.md) and [production booking plan](docs/BOOKING-PLAN.md). Stripe, a booking database, secure admin access, emails and calendar synchronization are a later client-approved phase.
 
-**Only `prev.action-etranger.fr` is a proposed deployment target.** Nothing in this repository backs up, modifies or deploys to the live WordPress site. Do not point this prototype at the apex domain. `robots.txt` and metadata request no indexing; these do not provide access control. Use hosting-level password protection for a private client preview.
-
-See [deployment handoff](docs/DEPLOYMENT.md) and [production booking plan](docs/BOOKING-PLAN.md).
-
-Content source: https://action-etranger.fr/ . Competitor reviewed for navigation and service clarity: https://titresfrancais.fr/ . Text and design in this demo are a new proposal; no competitor testimonials or results claims were copied.
-
-## Design previews
-
-[Desktop preview](docs/preview-desktop.png) · [Mobile preview](docs/preview-mobile.png)
+Content is based on the client's existing site. No testimonials, qualifications, success rates or government affiliation have been invented. Font and icon licenses are included alongside the assets.
