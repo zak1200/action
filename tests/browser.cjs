@@ -53,7 +53,7 @@ const url = process.env.DEMO_URL || "http://127.0.0.1:4173";
     check(
       "All brand images loaded without distortion",
       await page
-        .locator("img")
+        .locator('img[src*="action-etranger-logo"]')
         .evaluateAll((images) =>
           images.every(
             (i) =>

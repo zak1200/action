@@ -33,7 +33,7 @@
       type="font/woff2"
       crossorigin
     />
-    <link rel="stylesheet" href="style.css?v=20261116" />
+    <link rel="stylesheet" href="style.css?v=20261117-marseille" />
     <script src="app.js?v=20261116" defer></script>
   </head>
   <body>
@@ -100,15 +100,30 @@
             </div>
           </div>
           <aside class="hero-brand" aria-label="Action Étranger à Marseille">
+            <img
+              class="marseille-scene"
+              src="assets/marseille-vieux-port.webp"
+              srcset="
+                assets/marseille-vieux-port-768.webp 768w,
+                assets/marseille-vieux-port.webp     960w
+              "
+              sizes="(max-width: 600px) calc(100vw - 42px), (max-width: 900px) 300px, (max-width: 1200px) 400px, 415px"
+              alt="Illustration du Vieux-Port de Marseille, ses bateaux et Notre-Dame de la Garde à l’horizon"
+              width="960"
+              height="640"
+              fetchpriority="high"
+            />
             <div class="brand-portrait">
               <img
+                class="portrait-logo"
                 src="assets/action-etranger-logo-transparent.png"
                 alt="Logo officiel Action Étranger : une personne et la balance de la justice, entourées de bleu et de rouge"
                 width="512"
                 height="512"
-                fetchpriority="high"
               />
-              <p>Des repères clairs.<br />Une présence à vos côtés.</p>
+              <p>
+                À Marseille, à vos côtés.<small>Et partout en France.</small>
+              </p>
             </div>
             <a class="hero-address" href="#contact"
               ><span data-ui-icon="map-pin"></span
