@@ -391,3 +391,124 @@ $("#legal-open").onclick = () => {
   showDialog(info);
 };
 $("#year").textContent = new Date().getFullYear();
+
+// Pause on hover/focus, outside the viewport, in hidden tabs, or by user choice.
+(() => {
+  const carousel = document.querySelector(".reviews-carousel");
+  if (!carousel) return;
+  const track = carousel.querySelector(".reviews-grid");
+  const cards = [...track.querySelectorAll(".review-card")];
+  const controls = carousel.querySelector(".reviews-controls");
+  const toggle = carousel.querySelector(".review-pause");
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  let paused = reduced.matches,
+    visible = false,
+    hovered = false,
+    timer;
+  controls.hidden = false;
+  const index = () =>
+    cards.reduce(
+      (best, card, i) =>
+        Math.abs(
+          card.getBoundingClientRect().left -
+            track.getBoundingClientRect().left,
+        ) <
+        Math.abs(
+          cards[best].getBoundingClientRect().left -
+            track.getBoundingClientRect().left,
+        )
+          ? i
+          : best,
+      0,
+    );
+  const update = () => {
+    document.querySelector("#review-position").textContent = index() + 1;
+  };
+  const go = (direction) => {
+    const current = index();
+    const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+    const next =
+      direction > 0 && atEnd
+        ? 0
+        : (current + direction + cards.length) % cards.length;
+    track.scrollTo({
+      left:
+        track.scrollLeft +
+        cards[next].getBoundingClientRect().left -
+        track.getBoundingClientRect().left -
+        4,
+      behavior: reduced.matches ? "instant" : "smooth",
+    });
+  };
+  const schedule = () => {
+    clearInterval(timer);
+    toggle.hidden = reduced.matches;
+    toggle.textContent = paused ? "Reprendre" : "Pause";
+    toggle.setAttribute(
+      "aria-label",
+      paused ? "Reprendre le défilement" : "Mettre le défilement en pause",
+    );
+    if (
+      !paused &&
+      !reduced.matches &&
+      visible &&
+      !hovered &&
+      !carousel.contains(document.activeElement) &&
+      !document.hidden
+    )
+      timer = setInterval(() => go(1), 6000);
+  };
+  toggle.addEventListener("click", () => {
+    paused = !paused;
+    schedule();
+  });
+  carousel.querySelector(".review-prev").addEventListener("click", () => {
+    paused = true;
+    go(-1);
+    schedule();
+  });
+  carousel.querySelector(".review-next").addEventListener("click", () => {
+    paused = true;
+    go(1);
+    schedule();
+  });
+  track.addEventListener("scroll", update, { passive: true });
+  track.addEventListener("pointerdown", () => {
+    paused = true;
+    schedule();
+  });
+  track.addEventListener("keydown", (event) => {
+    if (
+      event.target === track &&
+      ["ArrowLeft", "ArrowRight"].includes(event.key)
+    ) {
+      event.preventDefault();
+      paused = true;
+      go(event.key === "ArrowRight" ? 1 : -1);
+      schedule();
+    }
+  });
+  carousel.addEventListener("pointerenter", () => {
+    hovered = true;
+    schedule();
+  });
+  carousel.addEventListener("pointerleave", () => {
+    hovered = false;
+    schedule();
+  });
+  carousel.addEventListener("focusin", schedule);
+  carousel.addEventListener("focusout", () => setTimeout(schedule, 0));
+  document.addEventListener("visibilitychange", schedule);
+  reduced.addEventListener("change", () => {
+    paused = reduced.matches || paused;
+    schedule();
+  });
+  new IntersectionObserver(
+    ([entry]) => {
+      visible = entry.isIntersecting;
+      schedule();
+    },
+    { threshold: 0.3 },
+  ).observe(carousel);
+  schedule();
+})();

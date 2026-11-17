@@ -33,8 +33,8 @@
       type="font/woff2"
       crossorigin
     />
-    <link rel="stylesheet" href="style.css?v=20261117-reviews" />
-    <script src="app.js?v=20261116" defer></script>
+    <link rel="stylesheet" href="style.css?v=20261117-motion" />
+    <script src="app.js?v=20261117-motion" defer></script>
   </head>
   <body>
     <a class="skip" href="#main">Aller au contenu</a>
@@ -198,68 +198,106 @@
               ></span>
             </a>
           </div>
-          <div class="reviews-grid">
-            <figure class="review-card">
-              <blockquote>
-                <p>« Très professionnel, sérieux et à l’écoute. »</p>
-              </blockquote>
-              <figcaption>
-                <span class="review-avatar" aria-hidden="true">LB</span
-                ><span
-                  ><strong>lounas belkhelouat</strong
-                  ><a
-                    href="https://www.google.com/maps/contrib/106529301934937302439/reviews?hl=fr-FR"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >Extrait d’un avis Google<span class="sr-only">
-                      de lounas belkhelouat (nouvel onglet)</span
-                    >
-                    <span aria-hidden="true">↗</span></a
-                  ></span
-                >
-              </figcaption>
-            </figure>
-            <figure class="review-card">
-              <blockquote>
-                <p>
-                  « L’équipe est professionnelle, à l’écoute et prend le temps
-                  d’expliquer les démarches. »
-                </p>
-              </blockquote>
-              <figcaption>
-                <span class="review-avatar" aria-hidden="true">SM</span
-                ><span
-                  ><strong>Simba Miliani</strong
-                  ><a
-                    href="https://www.google.com/maps/contrib/105983339251187567031/reviews?hl=fr-FR"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >Extrait d’un avis Google<span class="sr-only">
-                      de Simba Miliani (nouvel onglet)</span
-                    >
-                    <span aria-hidden="true">↗</span></a
-                  ></span
-                >
-              </figcaption>
-            </figure>
-            <figure class="review-card">
-              <blockquote><p>« Je recommande fortement »</p></blockquote>
-              <figcaption>
-                <span class="review-avatar" aria-hidden="true">LG</span
-                ><span
-                  ><strong>Lemia Ghez</strong
-                  ><a
-                    href="https://www.google.com/maps/contrib/110430225772009481460/reviews?hl=fr-FR"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >Extrait d’un avis Google<span class="sr-only">
-                      de Lemia Ghez (nouvel onglet)</span
-                    >
-                    <span aria-hidden="true">↗</span></a
-                  ></span
-                >
-              </figcaption>
-            </figure>
+          <div
+            class="reviews-carousel"
+            role="region"
+            aria-roledescription="carrousel"
+            aria-label="Témoignages Google"
+          >
+            <div class="reviews-controls" hidden>
+              <p class="reviews-position" aria-live="off">
+                Avis <span id="review-position">1</span> sur 3
+              </p>
+              <button
+                type="button"
+                class="review-pause"
+                aria-label="Mettre le défilement en pause"
+              >
+                Pause
+              </button>
+              <button
+                type="button"
+                class="review-prev"
+                aria-label="Avis précédent"
+              >
+                <span data-ui-icon="arrow-right"></span>
+              </button>
+              <button
+                type="button"
+                class="review-next"
+                aria-label="Avis suivant"
+              >
+                <span data-ui-icon="arrow-right"></span>
+              </button>
+            </div>
+            <div
+              class="reviews-grid"
+              id="reviews-track"
+              tabindex="0"
+              aria-label="Avis clients, défilement horizontal"
+            >
+              <figure class="review-card">
+                <blockquote>
+                  <p>« Très professionnel, sérieux et à l’écoute. »</p>
+                </blockquote>
+                <figcaption>
+                  <span class="review-avatar" aria-hidden="true">LB</span
+                  ><span
+                    ><strong>lounas belkhelouat</strong
+                    ><a
+                      href="https://www.google.com/maps/contrib/106529301934937302439/reviews?hl=fr-FR"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >Extrait d’un avis Google<span class="sr-only">
+                        de lounas belkhelouat (nouvel onglet)</span
+                      >
+                      <span aria-hidden="true">↗</span></a
+                    ></span
+                  >
+                </figcaption>
+              </figure>
+              <figure class="review-card">
+                <blockquote>
+                  <p>
+                    « L’équipe est professionnelle, à l’écoute et prend le temps
+                    d’expliquer les démarches. »
+                  </p>
+                </blockquote>
+                <figcaption>
+                  <span class="review-avatar" aria-hidden="true">SM</span
+                  ><span
+                    ><strong>Simba Miliani</strong
+                    ><a
+                      href="https://www.google.com/maps/contrib/105983339251187567031/reviews?hl=fr-FR"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >Extrait d’un avis Google<span class="sr-only">
+                        de Simba Miliani (nouvel onglet)</span
+                      >
+                      <span aria-hidden="true">↗</span></a
+                    ></span
+                  >
+                </figcaption>
+              </figure>
+              <figure class="review-card">
+                <blockquote><p>« Je recommande fortement »</p></blockquote>
+                <figcaption>
+                  <span class="review-avatar" aria-hidden="true">LG</span
+                  ><span
+                    ><strong>Lemia Ghez</strong
+                    ><a
+                      href="https://www.google.com/maps/contrib/110430225772009481460/reviews?hl=fr-FR"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >Extrait d’un avis Google<span class="sr-only">
+                        de Lemia Ghez (nouvel onglet)</span
+                      >
+                      <span aria-hidden="true">↗</span></a
+                    ></span
+                  >
+                </figcaption>
+              </figure>
+            </div>
           </div>
           <div class="reviews-bottom">
             <p>
