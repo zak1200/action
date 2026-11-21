@@ -1,4 +1,4 @@
-name: Build static demo
+name: Check and build booking site
 on:
   push:
     branches: [main]
@@ -14,9 +14,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_sqlite, mbstring, curl, openssl
+          tools: composer:v2
+      - run: composer install --working-dir=server --no-interaction --prefer-dist --no-dev
       - run: node --check app.js
-      - run: npm run build
+      - run: node --check booking.js && node --check admin.js
+      - run: php tests/backend.php
+      - run: node scripts/build.mjs --php
       - uses: actions/upload-artifact@v4
         with:
-          name: action-etrangers-static-demo
+          name: action-etranger-booking-site
           path: dist/

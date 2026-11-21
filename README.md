@@ -2,7 +2,7 @@
 
 French administrative support website demo, redesigned around the supplied official logo.
 
-**Preview:** https://prev.action-etranger.fr/ · **Admin demo:** https://prev.action-etranger.fr/#admin
+**Preview:** https://prev.action-etranger.fr/ · **Admin:** https://prev.action-etranger.fr/#admin
 
 ## Design
 
@@ -14,43 +14,41 @@ The official logo is preserved as the original PNG and a transparent PNG. Backgr
 
 ## Run and build
 
-Requires Node.js 20+ for building and Python 3 for the simple development server. No package installation is needed to run the website.
+Requires Node.js 20+, PHP 8.2+ with PDO SQLite, mbstring, curl and openssl, and Composer.
 
 ```sh
-node scripts/build.mjs
-python3 -m http.server 4173 --bind 127.0.0.1 --directory dist
+composer install --working-dir=server --no-dev --prefer-dist
+npm run build
+# Configure ACTION_PRIVATE_DIR outside the document root first; see docs/PAYMENTS.md.
+php -S 127.0.0.1:4173 -t dist
 ```
-
-On Windows use your installed Python executable if `python3` is not on PATH. Open http://127.0.0.1:4173/.
 
 ## Features
 
 - Six service detail dialogs and contextual appointment selection.
-- 30-minute, proposed €10 appointment simulation, Monday to Friday, 09:00–17:00 Paris time.
-- Required service/date/time and fictitious name/email; optional request description.
-- Weekend and elapsed-time rejection, duplicate-slot prevention, cancellation and public admin view.
+- 30-minute, €10 Stripe Checkout integration with persistent weekday appointments in Paris time.
+- Required name, email, phone and service; optional description.
+- Server-side slot locking, signed payment webhooks, email outbox and calendar attachments.
+- Protected admin with email login codes, payment status, closures, cancellations and delivery retries.
 - Native FAQ, keyboard navigation, visible focus, reduced-motion support and responsive layouts.
 - WhatsApp, TikTok and Instagram links; two supplied TikTok videos and Google Maps load only after a click.
 - Original title/description and preview noindex/nofollow settings retained.
 
-Bookings live only in memory in the current tab and disappear on reload. No real booking, payment, email, authentication or database is active. Use fictitious information only. Proposed fee/non-refund conditions are shown only inside the booking flow and retain the qualification for applicable legal rights.
+Payments remain disabled until private configuration and real sandbox acceptance pass. See [implementation status and setup](docs/PAYMENTS.md). The new backend has been checked locally with synthetic Stripe responses; live payments and SMTP delivery are not yet verified.
 
 ## Verification
 
-`tests/browser.cjs` covers 51 assertions and the five requested widths: 1440, 1024, 768, 390 and 375px. It also runs axe scans when `AXE_PATH` points to an installed `@axe-core/playwright` package. Browser tooling is development-only and is never uploaded to hosting.
-
 ```sh
-node tests/browser.cjs
+php tests/backend.php
+node tests/payments-browser.cjs
 ```
 
-Install Playwright separately or set `PLAYWRIGHT_PATH` to an existing installation; set `CHROMIUM_PATH` when using an installed Chromium/Edge executable. Optional environment variables: `DEMO_URL`, `ARTIFACT_DIR`, `AXE_PATH`. The legacy Python smoke suite remains available through `npm test`.
-
-The final local mobile Lighthouse run scored 100 performance, 100 accessibility and 100 best practices (LCP 1.3s, CLS 0, TBT 20ms). These are lab measurements. Preview SEO scores are intentionally reduced by noindex. Automated accessibility scans do not replace a complete manual audit. TikTok/Maps URL and lazy-loading checks do not guarantee availability of third-party playback.
+The backend suite includes concurrent slot attempts and signature/authentication checks. Browser checks cover 1440, 1024, 768, 390 and 375px. Set `PLAYWRIGHT_PATH`, `CHROMIUM_PATH`, `PHP_PATH`, `ARTIFACT_DIR` and optional `AXE_PATH` for existing test tooling. No browser test dependencies or fixtures are deployed.
 
 ## Deployment and next phase
 
-Deploy only to **prev.action-etranger.fr**. Production WordPress and email must remain intact. GitHub Actions builds a static artifact; it does not auto-deploy.
+Deploy only to **prev.action-etranger.fr**. Production WordPress and email must remain intact. GitHub Actions checks the backend and builds a PHP deployment artifact; it does not auto-deploy.
 
-See [deployment record](docs/DEPLOYMENT.md) and [production booking plan](docs/BOOKING-PLAN.md). Stripe, a booking database, secure admin access, emails and calendar synchronization are a later client-approved phase.
+See [deployment record](docs/DEPLOYMENT.md) and [production booking plan](docs/BOOKING-PLAN.md). The booking phase is in implementation; see [payment setup](docs/PAYMENTS.md) for completed components, activation requirements and remaining calendar integration.
 
 Content is based on the client's existing site. No testimonials, qualifications, success rates or government affiliation have been invented. Font and icon licenses are included alongside the assets.

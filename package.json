@@ -1,1 +1,1 @@
-{"name":"action-etrangers-demo","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"python3 -m http.server 4173 --bind 0.0.0.0","test":"python3 tests/smoke.py","build":"node scripts/build.mjs"}}
+{"name":"action-etrangers","version":"2.0.0","private":true,"type":"module","scripts":{"dev":"php -S 127.0.0.1:4173","test":"php tests/backend.php","test:browser":"node tests/payments-browser.cjs","build":"node scripts/build.mjs"}}

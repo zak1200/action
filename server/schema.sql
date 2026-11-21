@@ -1,0 +1,16 @@
+PRAGMA foreign_keys=ON;
+CREATE TABLE IF NOT EXISTS bookings (
+ id TEXT PRIMARY KEY, token_hash TEXT NOT NULL UNIQUE, request_key TEXT NOT NULL UNIQUE,
+ name TEXT NOT NULL, email TEXT NOT NULL, phone TEXT NOT NULL, service TEXT NOT NULL, description TEXT NOT NULL,
+ starts_at INTEGER NOT NULL, ends_at INTEGER NOT NULL, created_at INTEGER NOT NULL,
+ status TEXT NOT NULL DEFAULT 'pending', payment_status TEXT NOT NULL DEFAULT 'unpaid',
+ checkout_id TEXT UNIQUE, checkout_url TEXT, payment_id TEXT, amount INTEGER NOT NULL DEFAULT 1000,
+ currency TEXT NOT NULL DEFAULT 'eur', expires_at INTEGER NOT NULL, terms_version TEXT NOT NULL, terms_at INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS slots (starts_at INTEGER PRIMARY KEY, booking_id TEXT NOT NULL UNIQUE REFERENCES bookings(id));
+CREATE TABLE IF NOT EXISTS events (id TEXT PRIMARY KEY, received_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS notifications (id INTEGER PRIMARY KEY, booking_id TEXT NOT NULL REFERENCES bookings(id), kind TEXT NOT NULL, recipient TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0, available_at INTEGER NOT NULL, sent_at INTEGER, last_error TEXT, UNIQUE(booking_id,kind,recipient));
+CREATE TABLE IF NOT EXISTS login_codes (email TEXT PRIMARY KEY, digest TEXT NOT NULL, expires_at INTEGER NOT NULL, attempts INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS limits (key TEXT PRIMARY KEY, count INTEGER NOT NULL, expires_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS closures (day TEXT PRIMARY KEY);
+CREATE TABLE IF NOT EXISTS audit (id INTEGER PRIMARY KEY, action TEXT NOT NULL, booking_id TEXT, at INTEGER NOT NULL);

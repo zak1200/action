@@ -33,13 +33,15 @@
       type="font/woff2"
       crossorigin
     />
-    <link rel="stylesheet" href="style.css?v=20261117-motion" />
-    <script src="app.js?v=20261117-motion" defer></script>
+    <link rel="stylesheet" href="style.css?v=20261121-booking" />
+    <script src="app.js?v=20261121-booking" defer></script>
+    <script src="booking.js?v=20261121-booking" defer></script>
+    <script src="admin.js?v=20261121-booking" defer></script>
   </head>
   <body>
     <a class="skip" href="#main">Aller au contenu</a>
     <div class="demo-bar" role="region" aria-label="Version de démonstration">
-      Site de démonstration <span>Aucun paiement ni rendez-vous réel</span>
+      Préversion <span>Réservation en cours de préparation</span>
     </div>
     <header class="site-header">
       <div class="header-inner">
@@ -606,38 +608,80 @@
         hidden
         aria-labelledby="admin-title"
       >
-        <p class="eyebrow">Espace administrateur · Démonstration</p>
-        <h1 id="admin-title" tabindex="-1">Bonjour, l’équipe.</h1>
-        <p class="lead">
-          Un aperçu de votre futur tableau de bord. Aucune authentification ni
-          donnée réelle. Les simulations disparaissent au rechargement.
+        <p class="eyebrow">Espace administrateur</p>
+        <h1 id="admin-title" tabindex="-1">Votre agenda, au même endroit.</h1>
+        <p class="lead" id="admin-environment">
+          Rendez-vous, paiements et suivi des confirmations.
         </p>
-        <div class="admin-stats">
-          <article>
-            <span id="booking-count">0</span>Rendez-vous simulés
-          </article>
-          <article><span>0 €</span>Paiements encaissés</article>
-          <article><span>9h à 17h</span>Lundi au vendredi</article>
-        </div>
-        <div class="admin-toolbar">
-          <h2>Vos rendez-vous</h2>
-          <button class="button small" data-book>
-            Ajouter une simulation +
+        <p id="admin-message" role="status" class="error"></p>
+        <div id="admin-login" class="admin-login">
+          <h2>Connexion sécurisée</h2>
+          <p>
+            Recevez un code à usage unique sur l’adresse email de l’agence.
+            Aucun mot de passe à mémoriser.
+          </p>
+          <button class="button" id="request-code">
+            Recevoir mon code de connexion
           </button>
+          <form id="code-form" hidden>
+            <label for="admin-code">Code reçu par email</label>
+            <input
+              id="admin-code"
+              name="code"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              pattern="[0-9]{8}"
+              maxlength="8"
+              required
+            />
+            <button class="button" type="submit">Ouvrir mon espace</button>
+          </form>
         </div>
-        <div id="bookings-list" aria-live="polite"></div>
-        <div class="admin-roadmap">
-          <h3>Après validation du client</h3>
-          <p>
-            Connexion sécurisée · Calendrier partagé · Gestion des
-            disponibilités · Paiements Stripe · Notifications email · Gestion
-            des annulations
-          </p>
-          <p>
-            La réservation devra être confirmée côté serveur uniquement après
-            vérification du paiement. Aucun de ces services n’est actif dans
-            cette démo.
-          </p>
+        <div id="admin-dashboard" hidden>
+          <div class="admin-toolbar">
+            <p>
+              <strong id="booking-count">0</strong> rendez-vous sur la période
+            </p>
+            <button class="button small secondary" id="admin-logout">
+              Se déconnecter
+            </button>
+          </div>
+          <form id="admin-filter" class="admin-filter">
+            <label>Du<input type="date" id="admin-from" required /></label>
+            <label>Au<input type="date" id="admin-to" required /></label>
+            <button class="button" type="submit">
+              Afficher les rendez-vous
+            </button>
+          </form>
+          <div id="bookings-list" aria-live="polite"></div>
+          <div class="admin-pagination">
+            <button id="admin-prev" class="button small secondary">
+              Précédents
+            </button>
+            <p id="admin-pagination" role="status"></p>
+            <button id="admin-next" class="button small secondary">
+              Suivants
+            </button>
+          </div>
+          <section class="admin-closures" aria-labelledby="closures-title">
+            <h2 id="closures-title">Vos disponibilités</h2>
+            <p>
+              Du lundi au vendredi, de 9 h à 17 h. Rendez-vous de 30 minutes, à
+              réserver au moins une heure à l’avance. Une journée contenant des
+              réservations doit être libérée avant sa fermeture.
+            </p>
+            <form id="closure-form" class="admin-filter">
+              <label
+                >Fermer une journée<input
+                  type="date"
+                  id="closure-date"
+                  required /></label
+              ><button class="button secondary" type="submit">
+                Fermer cette journée
+              </button>
+            </form>
+            <div id="closure-list"></div>
+          </section>
         </div>
         <a class="text-link" href="#">← Revenir au site</a>
       </section>
@@ -675,8 +719,8 @@
             target="_blank"
             rel="noopener noreferrer"
             >Site actuel <span aria-hidden="true">↗</span></a
-          ><button id="legal-open">À propos de cette démo</button
-          ><a href="#admin">Espace admin · démo</a>
+          ><button id="legal-open">Réservation et confidentialité</button
+          ><a href="#admin">Espace administrateur</a>
           <div class="footer-socials">
             <a
               href="https://www.tiktok.com/@action.etrangers"
@@ -702,10 +746,7 @@
       </div>
       <div class="footer-bottom section">
         <span>© <span id="year"></span> Action Étranger</span
-        ><span
-          >Prototype de présentation · Aucun paiement ni formulaire
-          transmis</span
-        >
+        ><span>Préversion · Réservation en cours de préparation</span>
       </div>
     </footer>
     <aside aria-label="Contact rapide">
@@ -728,8 +769,8 @@
       <div id="booking-content">
         <h2 id="booking-title">Parlons de votre projet.</h2>
         <p class="form-intro">
-          Un échange de <strong>30 minutes · 10 €</strong> pour faire le
-          point.<br />Démo uniquement : aucun paiement ni réservation réelle.
+          Un échange de <strong>30 minutes · 10 €</strong> pour faire le point.
+          À l’agence, au 14 boulevard Charles Nédélec à Marseille.
         </p>
         <form id="booking-form">
           <label
@@ -754,22 +795,40 @@
           <p id="date-error" class="error" role="status"></p>
           <div class="form-row">
             <label
-              >Votre nom fictif<input
+              >Votre nom et prénom<input
                 name="name"
-                autocomplete="off"
+                autocomplete="name"
                 maxlength="80"
-                placeholder="Camille Démo"
+                placeholder="Nom et prénom"
                 required /></label
             ><label
-              >Email de démonstration<input
+              >Votre email<input
                 type="email"
                 name="email"
-                autocomplete="off"
+                autocomplete="email"
                 maxlength="150"
                 placeholder="camille@example.com"
                 required
             /></label>
           </div>
+          <label
+            >Votre numéro de téléphone<input
+              type="tel"
+              name="phone"
+              autocomplete="tel"
+              inputmode="tel"
+              maxlength="25"
+              minlength="8"
+              placeholder="06 12 34 56 78"
+              required
+              aria-describedby="phone-help"
+          /></label>
+          <small id="phone-help"
+            >Pour vous joindre au sujet de votre rendez-vous.</small
+          >
+          <p id="booking-mode" class="form-footnote">
+            Réservation en cours de préparation.
+          </p>
           <label
             >Votre demande <span class="optional">(facultatif)</span
             ><textarea
@@ -780,25 +839,27 @@
             ></textarea>
           </label>
           <div class="booking-terms">
-            <strong>Conditions proposées pour le rendez-vous</strong>
+            <strong>Conditions du rendez-vous</strong>
             <p>
-              Durée : 30 minutes. Tarif prévu : 10 €. Rendez-vous non
-              remboursable, sous réserve des droits légaux applicables. Ces
-              conditions devront être validées avant l’ouverture des paiements.
+              Durée : 30 minutes. Tarif : 10 €. Rendez-vous non remboursable,
+              sous réserve des droits légaux applicables. Ces conditions devront
+              être validées avant l’ouverture des paiements.
             </p>
           </div>
           <label class="checkbox"
             ><input type="checkbox" required name="consent" /><span
-              >J’ai lu les conditions proposées. Je comprends que ce parcours
-              est une simulation et j’utilise uniquement des données
-              fictives.</span
+              >J’ai lu les conditions du rendez-vous. J’accepte l’utilisation de
+              mes coordonnées pour gérer ma réservation et recevoir sa
+              confirmation.</span
             ></label
           ><button class="button full" type="submit">
-            Simuler mon rendez-vous <span data-ui-icon="arrow-right"></span>
+            Continuer vers le paiement · 10 €
+            <span data-ui-icon="arrow-right"></span>
           </button>
+          <p id="booking-error" class="error" role="alert"></p>
           <p class="form-footnote">
-            Aucune carte bancaire demandée. Aucun email envoyé.<br />Les données
-            restent en mémoire dans cet onglet jusqu’au rechargement.
+            Vos données bancaires sont saisies uniquement chez Stripe. L’agence
+            ne reçoit pas votre numéro de carte.
           </p>
         </form>
       </div>

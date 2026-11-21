@@ -11,9 +11,19 @@ for (const f of [
   "index.html",
   "style.css",
   "app.js",
+  "booking.js",
+  "admin.js",
+  ".htaccess",
+  "api",
   "assets",
   "robots.txt",
   "site.webmanifest",
 ])
   await cp(resolve(root, f), resolve(output, f), { recursive: true });
-console.log("Static demo built in dist/");
+await cp(resolve(root, "server"), resolve(output, "server"), {
+  recursive: true,
+  filter: (source) => !source.endsWith("config.example.php"),
+});
+console.log(
+  "PHP booking site built in dist/ (requires Composer dependencies and private server configuration).",
+);
