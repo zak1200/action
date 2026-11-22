@@ -35,3 +35,11 @@ Installed Taste entry, design-taste-frontend and frontend-ui-engineering skills;
 - Final local mobile Lighthouse: performance 100, accessibility 100, best practices 100; LCP 1.3s, CLS 0, total blocking time 20ms. These are lab measurements, not field Core Web Vitals. SEO is intentionally reduced by the preview's preserved noindex/robots rules.
 - Typography, service icons/card alignment, tablet layout, 375/390px mobile, navigation and dialogs reviewed visually. Reduced-motion behavior verified.
 - External iframe creation and fallback links work; successful third-party playback depends on provider permissions/network and is not guaranteed.
+
+## Visual refinement — 23 November 2026
+
+- Google review badge uses the official full-colour wordmark, hosted locally at `assets/google-wordmark.png` (544 × 184 source; rendered at 88 px wide with its original aspect ratio).
+- Source: https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png . Google retains its trademark rights; used solely to identify the linked Google reviews.
+- All six service-card titles use Manrope 700; body copy and contextual actions remain unchanged.
+- Restrained blue/white/red header rule and small tricolour hero detail use the existing brand palette. The hero explicitly identifies Action Étranger as a private service independent of the administration.
+- Browser review: 1440, 1024, 768, 390 and 375 px, no horizontal overflow or JavaScript errors; Google image loads and service dialogs still lead to the appropriate booking selection.

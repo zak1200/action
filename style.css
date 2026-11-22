@@ -362,6 +362,19 @@ strong {
   background: var(--paper);
   border-bottom: 1px solid var(--line);
 }
+.site-header::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -2px;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--blue) 0 33.333%,
+    #fff 33.333% 66.667%,
+    var(--red) 66.667%
+  );
+  pointer-events: none;
+}
 .header-inner {
   width: min(1296px, calc(100% - 64px));
   margin: auto;
@@ -502,6 +515,31 @@ nav > a[aria-current]:after {
 }
 .hero h1 span {
   color: var(--blue);
+}
+.hero .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--blue);
+}
+.hero .eyebrow::before {
+  content: "";
+  width: 27px;
+  height: 15px;
+  flex: 0 0 27px;
+  border: 1px solid var(--line);
+  background: linear-gradient(
+    to right,
+    var(--blue) 0 33.333%,
+    #fff 33.333% 66.667%,
+    var(--red) 66.667%
+  );
+}
+.hero-status {
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
 }
 .lead {
   font-size: 20px;
@@ -693,7 +731,11 @@ nav > a[aria-current]:after {
   border-color: var(--blue);
 }
 .google-label {
-  font: 600 16px/1.4 var(--heading);
+  display: block;
+  width: 88px;
+  height: auto;
+  margin-bottom: 4px;
+  object-fit: contain;
 }
 .rating-line {
   display: flex;
@@ -930,6 +972,7 @@ nav > a[aria-current]:after {
 .service-card h3 {
   margin-top: 2px;
   margin-bottom: 10px;
+  font-weight: 700;
 }
 .service-card p {
   font-size: 17px;
