@@ -33,7 +33,7 @@ try {
         $reads=['session','availability','booking','admin-bookings'];
         if(($method==='GET')!==in_array($action,$reads,true))throw new HttpError(405,'Méthode incorrecte.');
         switch($action){
-            case 'session': $result=['csrf'=>$_SESSION['csrf'],'mode'=>settings()['mode'],'enabled'=>(bool)settings()['enabled'],'authenticated'=>($_SESSION['admin_until']??0)>time()];break;
+            case 'session': $result=['csrf'=>$_SESSION['csrf'],'mode'=>settings()['mode'],'enabled'=>(bool)settings()['enabled'],'email_ready'=>!empty(settings()['smtp_password']),'authenticated'=>($_SESSION['admin_until']??0)>time()];break;
             case 'availability': rate('availability:'.($_SERVER['REMOTE_ADDR']??''),120,60);$result=['times'=>settings()['enabled']?availability((string)($input['date']??'')):[]];break;
             case 'checkout': rate('checkout:'.($_SERVER['REMOTE_ADDR']??''),12,3600);$result=checkout($input);break;
             case 'booking':

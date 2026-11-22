@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__.'/mail.php';
 
 function requestLogin(): array {
+    if(empty(settings()['smtp_password']))throw new HttpError(503,'L’envoi des codes de connexion sera disponible après configuration de la messagerie de l’agence.');
     rate('login-ip:'.($_SERVER['REMOTE_ADDR']??''),10,3600);
     rate('login-account',6,3600);
     $email=settings()['admin_email'];

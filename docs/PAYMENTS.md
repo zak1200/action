@@ -1,10 +1,10 @@
-# Booking implementation — 21 November 2026
+# Booking implementation — 22 November 2026
 
 ## Status
 
-Implemented locally; real Stripe checkout and email delivery are not yet verified or enabled. The authorized connector currently exposes the client live account. Sandbox access and server credentials are still required. Do not mistake connector authorization for a website API credential.
+Deployed to `https://prev.action-etranger.fr/` with sandbox bookings enabled. A real Stripe sandbox Checkout completed for EUR 10 with `livemode=false`; the website confirmed the appointment and removed its slot from availability. The completion event has no pending webhooks. Live payments remain disabled.
 
-The preview must stay disabled until the acceptance steps below pass. No production WordPress or DNS changes are part of this deployment.
+The once-per-minute worker is installed and has executed successfully. Hostinger SMTP accepted a probe and the admin login-code request succeeded. Inbox receipt, calendar attachment usability and the deployed admin login still require the agency's confirmation. No production WordPress or DNS changes were performed.
 
 ## Components
 
@@ -23,7 +23,9 @@ This directory is **outside public_html**, contains SQLite and sessions, and mus
 
 Use a distinct restricted sandbox key for preview, not the live key. Minimum API access: Checkout Sessions, Products and Prices write; Accounts, Payment Intents, Charges and Events read. Webhook endpoint provisioning through the connector additionally requires Webhook Endpoints write. Confirm the key belongs to the client account. Store secrets in a hosting vault when available; this shared PHP plan uses the protected file outside the public root.
 
-Sender: `contact@action-etranger.fr`; admin and agency notification recipient: `agenceassistance3@gmail.com`. Hostinger inspection on 21 November confirmed the mailbox exists, is active, has one forwarding rule, and is at 101% storage (1.01 GB / 1 GB) on the existing free plan. Its password is not available. Resolve the mailbox quota and verify SMTP credentials/delivery before activation; do not delete email or purchase an upgrade without user approval. SMTP authentication alone is not a delivery test. Sandbox notifications carry `[TEST]` and should use controlled test recipients.
+Sender: `contact@action-etranger.fr`; admin and agency notification recipient: `agenceassistance3@gmail.com`. Hostinger inspection on 21 November confirmed the mailbox exists, is active, has one forwarding rule, and is at 101% storage (1.01 GB / 1 GB) on the existing free plan. The owner generated a mailbox application password and entered it through a local private setup page. SMTP authentication and a probe send succeeded. Successful sending does not establish that this full mailbox can receive replies. Resolve the quota before live activation; do not delete email or purchase an upgrade without user approval. Sandbox notifications carry `[TEST]` and should use controlled test recipients.
+
+Private directory permissions: `700`; configuration and private archive: `600`. Credentials, SQLite data and PHP sessions are outside `public_html` and Git.
 
 ## Deployment
 
@@ -48,6 +50,9 @@ Notifications are queued once per booking/kind/recipient, retried up to eight ti
 
 ## Verification
 
+- Hosted sandbox acceptance: successful EUR 10 Checkout, confirmed appointment on 25 November 2026 at 10:00 Paris, and held slot excluded from availability. This is a clearly marked technical test, not a real customer meeting.
+- Published frontend: all 43 files match the tested build; all five viewport widths fit; no JavaScript errors. Protected server paths return 403 and unauthenticated admin data returns 401.
+- Production WordPress still returns 200 with its original title. MX, SPF and DMARC match the pre-deployment baseline.
 - `php tests/backend.php`: 43 checks, including two concurrent PHP processes competing for one slot, HMAC signatures, amount/mode checks, duplicate webhook, OTP replay/lockout, CSRF, cancellation, expiry and DST.
 - `node tests/payments-browser.cjs`: 39 checks using real local PHP/SQLite and a synthetic Stripe HTTP fixture, five widths (1440, 1024, 768, 390, 375), no JS errors, three axe scans with zero violations. It does **not** prove real Stripe or SMTP connectivity.
 - The test fixture, OTP seeder and fake credentials are never included in `dist`.

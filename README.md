@@ -34,7 +34,7 @@ php -S 127.0.0.1:4173 -t dist
 - WhatsApp, TikTok and Instagram links; two supplied TikTok videos and Google Maps load only after a click.
 - Original title/description and preview noindex/nofollow settings retained.
 
-Payments remain disabled until private configuration and real sandbox acceptance pass. See [implementation status and setup](docs/PAYMENTS.md). The new backend has been checked locally with synthetic Stripe responses; live payments and SMTP delivery are not yet verified.
+The preview now accepts **sandbox payments only**. A EUR 10 Stripe test Checkout succeeded and confirmed a persisted appointment. SMTP authentication, a probe send and the deployed admin code request succeeded; agency inbox receipt and deployed admin login confirmation are pending. Live payments remain disabled. See [implementation status and setup](docs/PAYMENTS.md).
 
 ## Verification
 

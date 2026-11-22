@@ -68,7 +68,7 @@ function availability(string $day): array {
 }
 function publicBooking(array $b): array {
     $start=(new DateTimeImmutable('@'.$b['starts_at']))->setTimezone(new DateTimeZone('Europe/Paris'));
-    return ['id'=>$b['id'],'status'=>$b['status'],'payment_status'=>$b['payment_status'],'date'=>$start->format('Y-m-d'),'time'=>$start->format('H:i'),'service'=>$b['service'],'amount'=>1000,'currency'=>'eur','mode'=>settings()['mode']];
+    return ['id'=>$b['id'],'status'=>$b['status'],'payment_status'=>$b['payment_status'],'date'=>$start->format('Y-m-d'),'time'=>$start->format('H:i'),'service'=>$b['service'],'amount'=>1000,'currency'=>'eur','mode'=>settings()['mode'],'email_ready'=>!empty(settings()['smtp_password'])];
 }
 function handleEvent(Stripe\Event $event): void {
     if($event->livemode!==(settings()['mode']==='live'))throw new HttpError(400,'Wrong payment mode');

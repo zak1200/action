@@ -39,6 +39,9 @@ async function session() {
   $("#booking-mode").textContent = test
     ? "Mode test : utilisez des coordonnées fictives et une carte de test Stripe."
     : "Paiement sécurisé par Stripe. Votre créneau est confirmé après validation du paiement.";
+  if (!bookingSession.email_ready)
+    $("#booking-mode").textContent +=
+      " Les emails de test ne sont pas encore activés.";
   $(".footer-bottom > span:last-child").textContent = test
     ? "Préversion · Paiements en mode test"
     : "Service privé indépendant de l’administration";
@@ -236,6 +239,9 @@ async function bookingReturn() {
           : params.has("payment")
             ? "Vous avez quitté le paiement. Le créneau reste temporairement réservé pendant la session Stripe. Aucun paiement n’est confirmé ici."
             : "Cette page se met à jour après vérification par Stripe. Un paiement différé peut prendre plus de temps.";
+      if (result.status === "confirmed" && !result.email_ready)
+        detail.textContent =
+          "Le rendez-vous de test est enregistré. L’envoi des emails sera disponible après configuration de la messagerie.";
       if (result.mode === "test")
         detail.textContent = "TEST : aucun débit réel. " + detail.textContent;
       if (result.status === "pending" && ++attempts < 12 && booking.open)

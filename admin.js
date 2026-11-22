@@ -28,6 +28,10 @@ async function renderAdmin() {
     const state = await session();
     $("#admin-login").hidden = state.authenticated;
     $("#admin-dashboard").hidden = !state.authenticated;
+    $("#request-code").disabled = !state.email_ready;
+    if (!state.email_ready)
+      adminMessage.textContent =
+        "La connexion par email sera disponible après configuration de la messagerie de l’agence.";
     $("#admin-environment").textContent =
       state.mode === "test"
         ? "Environnement de test · Aucun débit réel"
